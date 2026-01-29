@@ -1,0 +1,6 @@
+.video-player { max-width: 700px; margin-bottom: 2rem; }
+.player { margin: 0.5rem 0; }
+.comment { padding: .5rem; border-bottom: 1px solid #eee; }
+.meta { font-size: .85rem; color: #666; }
+.new-comment input, .new-comment textarea { width: 100%; margin: .5rem 0; padding: .5rem; box-sizing: border-box; }
+.new-comment button { padding: .5rem 1rem; }

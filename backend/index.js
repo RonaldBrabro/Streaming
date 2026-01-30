@@ -115,16 +115,16 @@ app.get('/api/home', async (req, res) => {
   try {
     const POPULAR_CATEGORY = Uuid.fromString('11111111-1111-1111-1111-111111111111');
 
-    const categoriesQuery = 'SELECT id_categoria, nombre_categoria FROM all_categories';
-    const streamsQuery = 'SELECT id_stream, titulo, thumbnail_url, is_live, pico_viewers FROM streams_by_category WHERE id_categoria = ? LIMIT 50';
+    const categoriesQuery = 'SELECT id_categoria, nombre FROM all_categories';
+    const streamsQuery = 'SELECT id_stream, titulo, thumbnail_url, is_live, pico_viewers, id_categoria FROM streams_by_category WHERE id_categoria = ? LIMIT 50';
 
     const [catsResult, streamsResult] = await Promise.all([
       execute(categoriesQuery, [], { prepare: true }),
       execute(streamsQuery, [POPULAR_CATEGORY], { prepare: true })
     ]);
 
-    const categories = catsResult.rows.map(r => ({ id: r.id_categoria, name: r.nombre_categoria }));
-    const streams = streamsResult.rows.map(r => ({ id: r.id_stream, title: r.titulo, thumbnail: r.thumbnail_url, is_live: r.is_live, viewers: r.pico_viewers }));
+    const categories = catsResult.rows.map(r => ({ id: r.id_categoria, name: r.nombre }));
+    const streams = streamsResult.rows.map(r => ({ id: r.id_stream, title: r.titulo, thumbnail: r.thumbnail_url, is_live: r.is_live, viewers: r.pico_viewers, id_categoria: r.id_categoria }));
 
     res.json({ categories, featuredStreams: streams });
   } catch (err) {
@@ -401,6 +401,75 @@ app.post('/api/clip', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error creating clip' });
+  }
+});
+
+// === Admin Middleware ===
+const verifyAdmin = (req, res, next) => {
+  const { email } = req.body;
+  if (email !== 'Admin@gmail.com') {
+    return res.status(403).json({ error: 'Access denied. Admin only.' });
+  }
+  next();
+};
+
+// === Admin Routes ===
+app.post('/api/admin/categories', verifyAdmin, async (req, res) => {
+  try {
+    const { nombre, imagen_portada } = req.body;
+    const id_categoria = Uuid.random();
+    const q = "INSERT INTO all_categories (tipo, nombre, id_categoria, imagen_portada) VALUES ('juego', ?, ?, ?)";
+    await execute(q, [nombre, id_categoria, imagen_portada], { prepare: true });
+    res.status(201).json({ success: true, id_categoria });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error creating category' });
+  }
+});
+
+app.delete('/api/admin/streams', verifyAdmin, async (req, res) => {
+  try {
+    const { id_categoria, pico_viewers, id_stream } = req.body;
+    const q = 'DELETE FROM streams_by_category WHERE id_categoria = ? AND pico_viewers = ? AND id_stream = ?';
+    await execute(q, [id_categoria, pico_viewers, id_stream], { prepare: true });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error deleting stream' });
+  }
+});
+
+app.delete('/api/admin/channel/:id_usuario', verifyAdmin, async (req, res) => {
+  try {
+    const { id_usuario } = req.params;
+    const q = 'DELETE FROM channel_profiles WHERE id_usuario = ?';
+    await execute(q, [id_usuario], { prepare: true });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error deleting channel' });
+  }
+});
+
+// Update login to include role
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const q = 'SELECT id_usuario, nickname, email, password_hash FROM users_by_email WHERE email = ? LIMIT 1';
+    const result = await execute(q, [email], { prepare: true });
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const user = result.rows[0];
+    // Simple password check (in real app, use bcrypt)
+    if (user.password_hash !== password) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const role = email === 'Admin@gmail.com' ? 'admin' : 'user';
+    res.json({ id_usuario: user.id_usuario, nickname: user.nickname, email: user.email, role });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Login failed' });
   }
 });
 

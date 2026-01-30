@@ -42,6 +42,7 @@ export class App implements OnInit {
   login() {
     this.vs.login(this.loginForm).subscribe(user => {
       this.currentUser = user;
+      localStorage.setItem('user', JSON.stringify(user));
       this.showLogin = false;
       this.loginForm = { email: '', password: '' };
     });

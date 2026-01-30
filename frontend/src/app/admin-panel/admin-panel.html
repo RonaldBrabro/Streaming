@@ -1,0 +1,38 @@
+<div class="admin-panel">
+  <h1>Panel de Administración</h1>
+
+  <section class="section">
+    <h2>Gestión de Categorías</h2>
+    <form (ngSubmit)="createCategory()" class="form">
+      <input [(ngModel)]="categoryForm.nombre" placeholder="Nombre de la categoría" required>
+      <input [(ngModel)]="categoryForm.imagen_portada" placeholder="URL de imagen" required>
+      <button type="submit">Crear Categoría</button>
+    </form>
+  </section>
+
+  <section class="section">
+    <h2>Gestión de Videos</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Viewers</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let stream of streams">
+          <td>{{ stream.title }}</td>
+          <td>{{ stream.viewers }}</td>
+          <td><button class="delete-btn" (click)="deleteStream(stream)">ELIMINAR</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Gestión de Canales</h2>
+    <input [(ngModel)]="channelId" placeholder="ID de usuario del canal">
+    <button (click)="deleteChannel()">Banear/Eliminar Canal</button>
+  </section>
+</div>

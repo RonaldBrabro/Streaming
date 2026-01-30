@@ -7,10 +7,12 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { SafeUrlPipe } from './pipes/safe-url.pipe';
+import { AdminPanel } from './admin-panel/admin-panel';
 
 @NgModule({
   declarations: [
-    App
+    App,
+    AdminPanel
   ],
   imports: [
     BrowserModule,

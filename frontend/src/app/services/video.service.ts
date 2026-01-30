@@ -18,6 +18,7 @@ export interface Stream {
   viewers: number;
   url?: string;
   description?: string;
+  id_categoria?: string;
 }
 
 export interface HomeData {
@@ -30,6 +31,7 @@ export interface User {
   nickname: string;
   avatar_url: string;
   region: string;
+  role?: string;
 }
 
 export interface Channel {
@@ -94,5 +96,18 @@ export class VideoService {
 
   postComment(comment: { video_id: string; author: string; content: string }) {
     return this.http.post(`${this.base}/comments`, comment);
+  }
+
+  // Admin methods
+  createCategory(category: { nombre: string; imagen_portada: string }): Observable<any> {
+    return this.http.post(`${this.base}/admin/categories`, category);
+  }
+
+  deleteStream(stream: Stream): Observable<any> {
+    return this.http.delete(`${this.base}/admin/streams`, { body: { id_categoria: stream.id_categoria || '', pico_viewers: stream.viewers, id_stream: stream.id } });
+  }
+
+  deleteChannel(id_usuario: string): Observable<any> {
+    return this.http.delete(`${this.base}/admin/channel/${id_usuario}`);
   }
 }

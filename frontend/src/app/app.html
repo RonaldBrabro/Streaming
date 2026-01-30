@@ -21,7 +21,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="content">
+    <main class="content" *ngIf="!currentUser || currentUser.role !== 'admin'">
       <div class="streams-grid" *ngIf="(homeData?.featuredStreams || []).length > 0; else noStreams">
         <div *ngFor="let stream of homeData?.featuredStreams" class="stream-card" (click)="selectStream(stream)">
           <img [src]="stream.thumbnail" alt="thumbnail">
@@ -78,4 +78,5 @@
     </div>
   </div>
 </div>
+<app-admin-panel *ngIf="currentUser?.role === 'admin'"></app-admin-panel>
 

@@ -1,0 +1,27 @@
+<div class="main-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>Categories</h3>
+    <ul>
+      <li *ngFor="let cat of homeData?.categories" (click)="selectCategory(cat)">{{ cat.name }}</li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="streams-grid" *ngIf="(homeData?.featuredStreams || []).length > 0; else noStreams">
+      <div *ngFor="let stream of homeData?.featuredStreams" class="stream-card" [routerLink]="['/streams', stream.id]">
+        <img [src]="stream.thumbnail" alt="thumbnail">
+        <h4>{{ stream.title }}</h4>
+        <p>{{ stream.viewers }} viewers</p>
+        <span *ngIf="stream.is_live" class="live">LIVE</span>
+      </div>
+    </div>
+    <ng-template #noStreams>
+      <div class="no-streams">
+        <h2>No se han subido videos todavía</h2>
+        <p>¡Sé el primero en crear contenido! Regístrate y comienza a transmitir.</p>
+      </div>
+    </ng-template>
+  </main>
+</div>

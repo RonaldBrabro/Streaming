@@ -8,11 +8,13 @@ import { App } from './app';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { SafeUrlPipe } from './pipes/safe-url.pipe';
 import { AdminPanel } from './admin-panel/admin-panel';
+import { Home } from './home/home';
 
 @NgModule({
   declarations: [
     App,
-    AdminPanel
+    AdminPanel,
+    Home
   ],
   imports: [
     BrowserModule,

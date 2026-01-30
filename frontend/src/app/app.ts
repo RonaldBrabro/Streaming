@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { VideoService, HomeData, Category, Stream, User } from './services/video.service';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { VideoService, User } from './services/video.service';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +9,7 @@ import { VideoService, HomeData, Category, Stream, User } from './services/video
   standalone: false,
   styleUrl: './app.css'
 })
-export class App implements OnInit {
-  homeData?: HomeData;
-  selectedStream?: Stream;
+export class App {
   currentUser?: User;
   showLogin = false;
   showRegister = false;
@@ -19,32 +19,31 @@ export class App implements OnInit {
   registerForm = { email: '', password: '', nickname: '', region: '' };
   channelForm = { nombre_canal: '', biografia: '', stream_key: '' };
 
-  constructor(private vs: VideoService) {}
+  constructor(private vs: VideoService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
-    this.loadHome();
-  }
-
-  loadHome() {
-    this.vs.getHome().subscribe(data => this.homeData = data);
-  }
-
-  selectCategory(cat: Category) {
-    this.vs.getStreams(cat.id).subscribe(streams => {
-      if (this.homeData) this.homeData.featuredStreams = streams;
-    });
-  }
-
-  selectStream(stream: Stream) {
-    this.selectedStream = stream;
+    // Load user from localStorage only on browser
+    if (isPlatformBrowser(this.platformId)) {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        this.currentUser = JSON.parse(userStr);
+      }
+    }
   }
 
   login() {
     this.vs.login(this.loginForm).subscribe(user => {
       this.currentUser = user;
-      localStorage.setItem('user', JSON.stringify(user));
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
       this.showLogin = false;
       this.loginForm = { email: '', password: '' };
+      if (user.role === 'admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/']);
+      }
     });
   }
 
@@ -67,5 +66,8 @@ export class App implements OnInit {
 
   logout() {
     this.currentUser = undefined;
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('user');
+    }
   }
 }

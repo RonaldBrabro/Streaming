@@ -1,29 +1,96 @@
-<div class="video-player">
-  <h3>{{ video.title }}</h3>
+<div *ngIf="video" class="video-container">
+  <!-- Header -->
+  <h2>{{ video?.title || 'Video' }}</h2>
+  <p class="description">{{ video?.description }}</p>
 
-  <div class="player">
-    <ng-container *ngIf="(video.url || '').includes('youtube') || (video.url || '').includes('youtu.be'); else nativeVideo">
-      <iframe width="560" height="315" [src]="(video.url || '') | safeUrl" frameborder="0" allowfullscreen></iframe>
-    </ng-container>
-    <ng-template #nativeVideo>
-      <video width="560" height="315" controls [src]="video.url || ''"></video>
-    </ng-template>
-  </div>
+  <!-- Main Layout -->
+  <div class="layout">
+    <!-- Left Column: Video Player & Comments Form -->
+    <div class="left-column">
+      <!-- Video Player -->
+      <div class="player-container">
+        <ng-container *ngIf="(video?.url || '').includes('youtube') || (video?.url || '').includes('youtu.be'); else nativeVideo">
+          <iframe width="100%" height="400" [src]="(video?.url || '') | safeUrl" frameborder="0" allowfullscreen></iframe>
+        </ng-container>
+        <ng-template #nativeVideo>
+          <video width="100%" height="400" controls [src]="video?.url || ''"></video>
+        </ng-template>
+      </div>
 
-  <p>{{ video.description }}</p>
+      <!-- Comments Section (RED BOX) -->
+      <div class="comments-box red-box">
+        <h3>Comentarios ({{ comments.length }})</h3>
+        <div class="comments-list">
+          <div *ngIf="comments.length === 0" class="no-comments">
+            No hay comentarios aún. ¡Sé el primero en comentar!
+          </div>
+          <div *ngFor="let comment of comments" class="comment-item">
+            <div class="comment-header">
+              <strong>{{ comment.author }}</strong>
+              <span class="timestamp">{{ comment.posted_timestamp | date:'short' }}</span>
+            </div>
+            <div class="comment-content">
+              {{ comment.content }}
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <hr />
+      <!-- Comment Form (ORANGE BOX) -->
+      <div class="comment-form-box orange-box">
+        <h3>Enviar Comentario</h3>
+        
+        <!-- Login Prompt -->
+        <div *ngIf="showLoginPrompt && !currentUser" class="login-prompt">
+          <p>Debes <strong>iniciar sesión</strong> o <strong>registrarte</strong> para comentar.</p>
+          <div class="action-buttons">
+            <button class="btn-login">Iniciar Sesión</button>
+            <button class="btn-register">Registrarse</button>
+          </div>
+          <button class="btn-close" (click)="closeLoginPrompt()">Cerrar</button>
+        </div>
 
-  <h4>Comentarios</h4>
-  <div *ngIf="comments.length === 0">No hay comentarios aún.</div>
-  <div *ngFor="let c of comments" class="comment">
-    <div class="meta"><strong>{{ c.author }}</strong> • {{ c.posted_timestamp | date:'short' }}</div>
-    <div>{{ c.content }}</div>
-  </div>
+        <!-- Comment Form -->
+        <div *ngIf="!showLoginPrompt || currentUser" class="form-content">
+          <textarea 
+            [(ngModel)]="newContent" 
+            placeholder="Escribe tu comentario..."
+            class="comment-textarea"
+            [disabled]="!currentUser">
+          </textarea>
+          <button 
+            (click)="postComment()"
+            class="btn-send"
+            [disabled]="!currentUser || !newContent.trim()">
+            Enviar Comentario
+          </button>
+          <p *ngIf="!currentUser" class="login-hint">
+            Inicia sesión para comentar →
+          </p>
+        </div>
+      </div>
+    </div>
 
-  <div class="new-comment">
-    <input [(ngModel)]="newAuthor" placeholder="Tu nombre" />
-    <textarea [(ngModel)]="newContent" placeholder="Tu comentario"></textarea>
-    <button (click)="postComment()">Enviar</button>
+    <!-- Right Column: Other Streams (YELLOW BOX) -->
+    <div class="right-column">
+      <div class="streams-box yellow-box">
+        <h3>Otros Streams</h3>
+        <div class="streams-list">
+          <div *ngIf="otherStreams.length === 0" class="no-streams">
+            No hay otros streams disponibles.
+          </div>
+          <div *ngFor="let stream of otherStreams" class="stream-item">
+            <div class="stream-thumbnail">
+              <img src="https://via.placeholder.com/150x85?text={{stream.title}}" alt="thumbnail">
+            </div>
+            <div class="stream-info">
+              <h4>{{ stream.title }}</h4>
+              <p class="stream-creator">{{ stream.creator || stream.streamer || 'Creador' }}</p>
+              <button class="btn-watch" [routerLink]="['/streams', stream.video_id || stream.id]">Ver Stream</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

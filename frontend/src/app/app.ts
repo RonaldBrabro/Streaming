@@ -14,6 +14,7 @@ export class App {
   showLogin = false;
   showRegister = false;
   showCreateChannel = false;
+  showLogoutConfirm = false;
 
   loginForm = { email: '', password: '' };
   registerForm = { email: '', password: '', nickname: '', region: '' };
@@ -65,9 +66,18 @@ export class App {
   }
 
   logout() {
+    this.showLogoutConfirm = true;
+  }
+
+  confirmLogout() {
     this.currentUser = undefined;
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('user');
     }
+    this.showLogoutConfirm = false;
+    this.router.navigate(['/']);
   }
-}
+
+  cancelLogout() {
+    this.showLogoutConfirm = false;
+  }

@@ -195,3 +195,57 @@
 .modal button:hover {
   background: #772ce8;
 }
+
+/* Logout Confirmation Modal */
+.logout-confirm {
+  min-width: 380px;
+  text-align: center;
+  border: 2px solid #ff6b6b;
+  box-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+}
+
+.logout-confirm h3 {
+  color: #ff6b6b;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.logout-confirm p {
+  color: #d0d0d0;
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.btn-confirm {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+  padding: 0.75rem 2rem;
+  font-weight: bold;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+  background: linear-gradient(135deg, #ff5252 0%, #ff3838 100%);
+  box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  background: #444;
+  padding: 0.75rem 2rem;
+  font-weight: bold;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #555;
+  box-shadow: 0 4px 8px rgba(100, 100, 100, 0.3);
+}

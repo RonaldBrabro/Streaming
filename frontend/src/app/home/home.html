@@ -1,10 +1,19 @@
 <div class="main-layout">
-  <!-- Sidebar -->
+  <!-- Sidebar with Categories -->
   <aside class="sidebar">
     <h3>Categories</h3>
-    <ul>
-      <li *ngFor="let cat of homeData?.categories" (click)="selectCategory(cat)">{{ cat.name }}</li>
-    </ul>
+    <div class="categories-grid">
+      <button 
+        *ngFor="let cat of homeData?.categories" 
+        (click)="selectCategory(cat)"
+        class="category-button"
+        [class.active]="isSelected(cat.id)">
+        <div class="category-image">
+          <img [src]="getCategoryImage(cat.name)" [alt]="cat.name">
+        </div>
+        <div class="category-name">{{ cat.name }}</div>
+      </button>
+    </div>
   </aside>
 
   <!-- Main Content -->

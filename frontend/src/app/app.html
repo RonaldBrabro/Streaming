@@ -46,5 +46,17 @@
       <button (click)="showCreateChannel = false">Cancel</button>
     </div>
   </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div *ngIf="showLogoutConfirm" class="modal">
+    <div class="modal-content logout-confirm">
+      <h3>Confirmar cierre de sesión</h3>
+      <p>¿Estás seguro de que deseas cerrar sesión?</p>
+      <div class="button-group">
+        <button class="btn-confirm" (click)="confirmLogout()">Sí, cerrar sesión</button>
+        <button class="btn-cancel" (click)="cancelLogout()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </div>
 

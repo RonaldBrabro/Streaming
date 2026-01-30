@@ -81,3 +81,4 @@ export class App {
   cancelLogout() {
     this.showLogoutConfirm = false;
   }
+}

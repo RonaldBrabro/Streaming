@@ -1,13 +1,12 @@
 <div class="video-player">
   <h3>{{ video.title }}</h3>
 
-  <!-- Simple support for raw video file or YouTube link -->
   <div class="player">
-    <ng-container *ngIf="video.url?.includes('youtube') || video.url?.includes('youtu.be'); else nativeVideo">
-      <iframe width="560" height="315" [src]="video.url | safeUrl" frameborder="0" allowfullscreen></iframe>
+    <ng-container *ngIf="(video.url || '').includes('youtube') || (video.url || '').includes('youtu.be'); else nativeVideo">
+      <iframe width="560" height="315" [src]="(video.url || '') | safeUrl" frameborder="0" allowfullscreen></iframe>
     </ng-container>
     <ng-template #nativeVideo>
-      <video width="560" height="315" controls [src]="video.url"></video>
+      <video width="560" height="315" controls [src]="video.url || ''"></video>
     </ng-template>
   </div>
 

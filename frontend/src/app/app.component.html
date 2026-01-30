@@ -1,0 +1,63 @@
+<div class="app-grid">
+  <!-- Navbar -->
+  <header class="navbar" role="banner">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#9147ff"/></svg>
+      <span>Streamer</span>
+    </div>
+
+    <div class="search">
+      <input type="search" placeholder="Buscar canales, juegos, categorías..." aria-label="Buscar" />
+    </div>
+
+    <div class="actions">
+      <button class="btn small">IR LIVE</button>
+      <div class="avatar" title="Usuario"></div>
+    </div>
+  </header>
+
+  <!-- Left Sidebar -->
+  <aside class="sidebar" role="navigation" aria-label="Canales">
+    <div class="section">
+      <div class="section-title">Canales Recomendados</div>
+      <ng-container *ngFor="let ch of recommendedChannels; let i = index">
+        <div class="channel-card">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">{{ ch.name || ('Streamer ' + (i + 1)) }}</div>
+            <div class="status"><span class="status-dot online"></span>{{ ch.game || 'Just Chatting' }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="section" style="margin-top:12px">
+      <div class="section-title">Canales que sigo</div>
+      <ng-container *ngFor="let ch of followedChannels; let i = index">
+        <div class="channel-card">
+          <div class="thumb"></div>
+          <div class="meta">
+            <div class="name">{{ ch.name || ('Channel ' + (i + 1)) }}</div>
+            <div class="status"><span class="status-dot offline"></span>{{ ch.game || 'Offline' }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main" role="main">
+    <div class="container">
+      <!-- Placeholder hero and grid will be inside router views -->
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Right Column (Chat / Extras) -->
+  <aside class="right-col" role="complementary">
+    <div class="section-title">Chat Rápido</div>
+    <div class="card" style="padding:12px;">
+      <div class="muted">Este panel muestra chats y eventos en vivo.</div>
+    </div>
+  </aside>
+</div>
